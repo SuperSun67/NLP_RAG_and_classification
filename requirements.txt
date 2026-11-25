@@ -1,0 +1,13 @@
+# Install the CUDA build separately (see README.md).
+torch==2.11.0
+transformers==5.9.0
+sentencepiece==0.2.2
+protobuf==7.36.2
+scikit-learn==1.8.0
+numpy==2.4.4
+pandas==3.0.2
+pyarrow==24.0.0
+tokenizers==0.22.2
+safetensors==0.7.0
+fastapi==0.136.1
+uvicorn==0.46.0

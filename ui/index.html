@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123e36">
+  <meta name="description" content="ทดลองวิเคราะห์คะแนนรีวิวร้านอาหารภาษาไทยด้วย III-BERT">
+  <title>Review Studio · III-BERT</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Review Studio หน้าหลัก"><span class="brand-icon" aria-hidden="true">✳</span><span>review<span class="brand-light">studio</span><span class="brand-dot">.</span></span></a>
+    <div class="header-right"><span class="local-label">THAI REVIEW ANALYSIS</span><span id="status" class="status" role="status"><span class="status-dot"></span><span id="status-text">กำลังเชื่อมต่อโมเดล</span></span></div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="eyebrow"><span class="tiny-line"></span> FROM WORDS TO STARS</div>
+      <h1>รีวิวนี้…<br class="mobile-break">ได้กี่<span class="accent">ดาว?</span><span class="title-star" aria-hidden="true">✧</span></h1>
+      <p class="intro-copy">ลองให้ AI อ่านรีวิวร้านอาหารของคุณ แล้วสำรวจคะแนนที่ซ่อนอยู่ในข้อความ</p>
+      <div class="model-pill"><span aria-hidden="true">✦</span> III-BERT <span class="pill-divider">/</span> Fine-tuned on Wongnai Reviews</div>
+    </section>
+
+    <div class="workspace">
+      <section class="editor card" aria-labelledby="input-title">
+        <div class="section-top"><div><span class="step">01 / INPUT</span><h2 id="input-title">เล่าประสบการณ์มื้อนั้น</h2></div><span class="language-tag">ภาษาไทย</span></div>
+        <form id="review-form">
+          <label class="sr-only" for="review">ข้อความรีวิวร้านอาหาร</label>
+          <div class="text-wrap"><textarea id="review" maxlength="20000" rows="8" placeholder="อาหารอร่อยมาก วัตถุดิบสด บรรยากาศดี พนักงานดูแลดีมาก มีโอกาสจะกลับมาอีกแน่นอน…" aria-describedby="input-hint" spellcheck="false"></textarea><div class="input-footer"><span id="input-hint">รีวิวรสชาติ บริการ หรือบรรยากาศได้เลย</span><span id="char-count">0 / 20,000</span></div></div>
+          <div class="examples"><span class="example-label">ลองจากตัวอย่าง</span><div class="example-buttons"><button class="example" type="button" data-example="positive"><span aria-hidden="true">✧</span> ประทับใจ</button><button class="example" type="button" data-example="mixed"><span aria-hidden="true">◐</span> มีดีมีเสีย</button><button class="example" type="button" data-example="negative"><span aria-hidden="true">↘</span> ไม่ประทับใจ</button></div></div>
+          <div id="error" class="notice error" role="alert" hidden></div>
+          <div class="actions"><button id="submit" class="primary-button" type="submit" disabled><span id="submit-text">วิเคราะห์รีวิว</span><span id="submit-icon" aria-hidden="true">↗</span></button><button id="clear" class="clear-button" type="button">ล้างข้อความ</button></div>
+          <div class="keyboard-hint">กด <kbd>Ctrl</kbd> + <kbd>Enter</kbd> เพื่อวิเคราะห์ <span>ประมวลผลในเครื่องของคุณ</span></div>
+        </form>
+      </section>
+
+      <section class="result card" aria-labelledby="result-title" aria-busy="false">
+        <div class="section-top"><div><span class="step">02 / PREDICTION</span><h2 id="result-title">ผลการวิเคราะห์</h2></div><span class="result-mark" aria-hidden="true">✦</span></div>
+        <div id="empty-state" class="empty-state"><div class="empty-art" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="large-star">✧</span><span class="small-star">✦</span></div><h3>ทุกรีวิวมีเรื่องราว</h3><p>ใส่ข้อความแล้วกดวิเคราะห์<br>เพื่อดูว่าโมเดลอ่านรีวิวนี้เป็นกี่ดาว</p><div class="ghost-stars" aria-hidden="true">★ ★ ★ ★ ★</div></div>
+        <div id="loading-state" class="loading-state" role="status" hidden><span class="spinner"></span><h3>กำลังอ่านรีวิวของคุณ</h3><p>รอสักครู่ โมเดลกำลังประมวลผล</p></div>
+        <div id="result-content" hidden>
+          <div class="score-area"><div class="score-number"><span id="score">—</span><span class="score-denominator">/ 5</span></div><div id="score-stars" class="score-stars" aria-hidden="true"></div><p id="score-caption" class="score-caption"></p></div>
+          <div class="distribution-title"><h3>ความน่าจะเป็นแต่ละคะแนน</h3><span id="time"></span></div>
+          <div id="distribution" class="distribution" aria-label="ความน่าจะเป็นของคะแนน 1 ถึง 5 ดาว"></div>
+          <div id="truncation" class="notice truncation" hidden></div>
+          <p class="result-note">ความน่าจะเป็นเป็นค่าที่โมเดลคำนวณ ไม่ใช่การรับประกันว่าคะแนนจะถูกต้อง</p>
+        </div>
+        <div id="result-announcement" class="sr-only" role="status" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <section class="model-info" aria-label="ข้อมูลโมเดล">
+      <div class="info-description"><span class="info-icon" aria-hidden="true">⌘</span><div><h3>โมเดลภาษาไทย สำหรับรีวิวไทย</h3><p>III-BERT เรียนรู้จากรีวิว Wongnai เพื่อทำนายคะแนน 1–5 ดาว</p></div></div>
+      <div class="metric"><span class="metric-label">TEST ACCURACY</span><strong id="accuracy">—</strong></div>
+      <div class="metric"><span class="metric-label">MACRO F1</span><strong id="f1">—</strong></div>
+    </section>
+    <footer><span>REVIEW STUDIO <span class="footer-dot">·</span> POWERED BY III-BERT</span><span>หนึ่งข้อความ อีกมุมมอง</span></footer>
+  </main>
+</body>
+</html>
